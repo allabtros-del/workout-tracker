@@ -246,7 +246,7 @@ if (dayLogs.length > 0) {
   document.getElementById('selectedDateLabel').innerText = `Selected Date: ${selectedDateKey} (${count} workout${count !== 1 ? 's' : ''})`;
 }
 
-function logWorkout() {
+  function logWorkout() {
   const isDone = document.getElementById('chkDone').checked;
   if (!isDone) return;
 
@@ -255,12 +255,13 @@ function logWorkout() {
     typeSel = document.getElementById('customInput').value.trim() || 'Custom Activity';
   }
 
-  // Initialize array if no workouts exist for this date yet
-  if (!logs[selectedDateKey]) {
+  // HIGHLIGHT: Convert old single-object logs into an array seamlessly
+  if (logs[selectedDateKey] && !Array.isArray(logs[selectedDateKey])) {
+    logs[selectedDateKey] = [logs[selectedDateKey]];
+  } else if (!logs[selectedDateKey]) {
     logs[selectedDateKey] = [];
   }
 
-  // Append new workout entry to the date's list
   logs[selectedDateKey].push({ type: typeSel, completed: true, timestamp: new Date().getTime() });
   localStorage.setItem('workout_logs_data', JSON.stringify(logs));
   
