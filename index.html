@@ -1,132 +1,3 @@
-<!DOCTYPE html>
-<!-- Custom App Icon for Phone Home Screen -->
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
-<html lang="en">
-<head>
-  <link rel="manifest" href="manifest.json">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>30-Min Workout Tracker</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #10b981;
-      --accent-hover: #059669;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --danger: #ef4444;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding: 16px; display: flex; justify-content: center; }
-    .container { max-width: 600px; width: 100%; display: flex; flex-direction: column; gap: 16px; }
-
-    /* Top Quote */
-    .quote-bar { background: var(--card-bg); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; text-align: center; font-size: 0.85rem; color: #a7f3d0; font-style: italic; }
-
-    /* KPIs */
-    .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .kpi-card { background: var(--card-bg); border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; }
-    .kpi-val { font-size: 1.4rem; font-weight: bold; color: var(--accent); }
-    .kpi-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
-
-    /* Calendar */
-    .calendar-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .cal-title { font-weight: bold; font-size: 1.1rem; }
-    .cal-nav { background: var(--border); color: var(--text); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
-    
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .weekday-hdr { text-align: center; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; padding-bottom: 4px; }
-    
-    .day-cell {
-      aspect-ratio: 1; border-radius: 8px; background: #0f172a; border: 1px solid var(--border);
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      padding: 4px; cursor: pointer; position: relative; transition: all 0.15s ease;
-    }
-    .day-cell:hover { border-color: var(--text-muted); }
-    .day-cell.selected { border: 2px solid #38bdf8 !important; background: #1e293b; }
-    .day-num { font-size: 0.75rem; align-self: flex-start; color: var(--text-muted); }
-    .day-status { font-size: 0.9rem; margin-top: auto; margin-bottom: auto; text-align: center; line-height: 1; }
-
-    /* Controls */
-    .control-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-    .date-label { font-size: 0.9rem; color: #38bdf8; font-weight: 600; text-align: center; }
-    .form-group { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
-    .form-group input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
-    
-    select, input[type="text"] {
-      width: 100%; padding: 10px; background: #0f172a; border: 1px solid var(--border);
-      color: var(--text); border-radius: 6px; font-size: 0.9rem; outline: none;
-    }
-    select:focus, input[type="text"]:focus { border-color: #38bdf8; }
-
-    .btn-row { display: flex; gap: 10px; }
-    .btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
-    .btn-primary { background: var(--accent); color: #022c22; }
-    .btn-primary:hover { background: var(--accent-hover); }
-    .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-    .btn-danger:hover { background: rgba(239, 68, 68, 0.1); }
-  </style>
-</head>
-<body>
-
-<div class="container">
-  <!-- Top Quote -->
-  <div class="quote-bar" id="quoteBar">"Consistency is what transforms average into excellence."</div>
-
-  <!-- KPIs -->
-  <div class="kpi-row">
-    <div class="kpi-card"><div class="kpi-val" id="totalDays">0</div><div class="kpi-lbl">Total Days</div></div>
-   <div class="kpi-card">
-  <div class="kpi-val" id="currentStreak">0</div>
-  <!-- Change "Current Streak" to "This Month" or "Month Days" -->
-  <div class="kpi-lbl">This Month</div> 
-</div>
-    <div class="kpi-card"><div class="kpi-val" id="bestStreak">0</div><div class="kpi-lbl">Best Streak</div></div>
-  </div>
-
-  <!-- Calendar -->
-  <div class="calendar-card">
-    <div class="cal-header">
-      <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
-      <div class="cal-title" id="calMonthTitle">July 2026</div>
-      <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
-    </div>
-    <div class="cal-grid" id="calGrid"></div>
-  </div>
-
-  <!-- Control Box -->
-  <div class="control-card">
-    <div class="date-label" id="selectedDateLabel">Selected Date: --</div>
-    <div class="form-group">
-      <input type="checkbox" id="chkDone" checked />
-      <label for="chkDone">30 Minutes Completed</label>
-    </div>
-    
-    <select id="workoutSelect" onchange="toggleCustomInput()">
-      <option value="Home">🏠 Home Workout</option>
-      <option value="Strength">🏋️ Strength Training</option>
-      <option value="Swimming">🏊 Swimming</option>
-      <option value="Cardio">🏃 Cardio / Running</option>
-      <option value="Yoga">🧘 Yoga / Stretching</option>
-      <option value="Walking">🚶 Walking</option>
-      <option value="Aerobics">🤸 Aerobics</option>
-      <option value="CUSTOM">+ Add Custom Workout...</option>
-    </select>
-
-    <input type="text" id="customInput" placeholder="Type custom workout (e.g. Kickboxing, Pilates)" style="display: none;" />
-
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="logWorkout()">Log Workout</button>
-      <button class="btn btn-danger" onclick="deleteWorkout()">Delete</button>
-    </div>
-  </div>
-</div>
-
 <script>
   const ICON_MAP = {
     'Home': '🏠', 'Strength': '🏋️', 'Swimming': '🏊', 'Cardio': '🏃',
@@ -194,24 +65,23 @@
       num.innerText = d;
       cell.appendChild(num);
 
-      // REPLACE THIS INSIDE renderCalendar():
-const dayLogs = logs[cellDateKey] || [];
-if (dayLogs.length > 0) {
-  const status = document.createElement('div');
-  status.className = 'day-status';
-  
-  // Handles both single object (legacy) or array (new multi-workout)
-  const firstLog = Array.isArray(dayLogs) ? dayLogs[0] : dayLogs;
-  const count = Array.isArray(dayLogs) ? dayLogs.length : 1;
-  const primaryIcon = getIconForActivity(firstLog.type);
+      // FIX #3: Safely support both legacy objects and arrays for rendering
+      const rawEntry = logs[cellDateKey];
+      if (rawEntry) {
+        const dayLogs = Array.isArray(rawEntry) ? rawEntry : [rawEntry];
+        if (dayLogs.length > 0) {
+          const status = document.createElement('div');
+          status.className = 'day-status';
+          const primaryIcon = getIconForActivity(dayLogs[0].type);
 
-  if (count === 1) {
-    status.innerHTML = `✅<br>${primaryIcon}`;
-  } else {
-    status.innerHTML = `✅<br>${primaryIcon}<div style="font-size: 0.6rem; background: #334155; padding: 1px 4px; border-radius: 4px; color: #a7f3d0; margin-top: 2px;">+${count - 1}</div>`;
-  }
-  cell.appendChild(status);
-}
+          if (dayLogs.length === 1) {
+            status.innerHTML = `✅<br>${primaryIcon}`;
+          } else {
+            status.innerHTML = `✅<br>${primaryIcon}<div style="font-size: 0.6rem; background: #334155; padding: 1px 4px; border-radius: 4px; color: #a7f3d0; margin-top: 2px;">+${dayLogs.length - 1}</div>`;
+          }
+          cell.appendChild(status);
+        }
+      }
 
       cell.onclick = () => {
         selectedDateKey = cellDateKey;
@@ -223,7 +93,9 @@ if (dayLogs.length > 0) {
     }
   }
 
+  // FIX #1: Guard against null/undefined types
   function getIconForActivity(type) {
+    if (!type) return '🎯';
     if (ICON_MAP[type]) return ICON_MAP[type];
     for (let key in ICON_MAP) {
       if (type.toLowerCase().includes(key.toLowerCase())) return ICON_MAP[key];
@@ -237,106 +109,105 @@ if (dayLogs.length > 0) {
   }
 
   function updateSelectedDateLabel() {
-  // HIGHLIGHT: Count total entries safely without throwing undefined errors
-  const entry = logs[selectedDateKey];
-  let count = 0;
-  if (entry) {
-    count = Array.isArray(entry) ? entry.length : 1;
+    const entry = logs[selectedDateKey];
+    let count = 0;
+    if (entry) {
+      count = Array.isArray(entry) ? entry.length : 1;
+    }
+    document.getElementById('selectedDateLabel').innerText = `Selected Date: ${selectedDateKey} (${count} workout${count !== 1 ? 's' : ''})`;
   }
-  document.getElementById('selectedDateLabel').innerText = `Selected Date: ${selectedDateKey} (${count} workout${count !== 1 ? 's' : ''})`;
-}
 
   function logWorkout() {
-  const isDone = document.getElementById('chkDone').checked;
-  if (!isDone) return;
+    const isDone = document.getElementById('chkDone').checked;
+    if (!isDone) return;
 
-  let typeSel = document.getElementById('workoutSelect').value;
-  if (typeSel === 'CUSTOM') {
-    typeSel = document.getElementById('customInput').value.trim() || 'Custom Activity';
-  }
+    let typeSel = document.getElementById('workoutSelect').value;
+    if (typeSel === 'CUSTOM') {
+      typeSel = document.getElementById('customInput').value.trim() || 'Custom Activity';
+    }
 
-  // HIGHLIGHT: Convert old single-object logs into an array seamlessly
-  if (logs[selectedDateKey] && !Array.isArray(logs[selectedDateKey])) {
-    logs[selectedDateKey] = [logs[selectedDateKey]];
-  } else if (!logs[selectedDateKey]) {
-    logs[selectedDateKey] = [];
-  }
-
-  logs[selectedDateKey].push({ type: typeSel, completed: true, timestamp: new Date().getTime() });
-  localStorage.setItem('workout_logs_data', JSON.stringify(logs));
-  
-  renderCalendar();
-  updateKPIs();
-  updateSelectedDateLabel();
-}
-
-  function deleteWorkout() {
-  if (logs[selectedDateKey]) {
-    // If it's an old single object, turn it into an array first
-    if (!Array.isArray(logs[selectedDateKey])) {
+    if (logs[selectedDateKey] && !Array.isArray(logs[selectedDateKey])) {
       logs[selectedDateKey] = [logs[selectedDateKey]];
+    } else if (!logs[selectedDateKey]) {
+      logs[selectedDateKey] = [];
     }
 
-    // Remove the last item
-    logs[selectedDateKey].pop();
-
-    // If empty, clear the key completely
-    if (logs[selectedDateKey].length === 0) {
-      delete logs[selectedDateKey];
-    }
-
+    logs[selectedDateKey].push({ type: typeSel, completed: true, timestamp: new Date().getTime() });
     localStorage.setItem('workout_logs_data', JSON.stringify(logs));
+    
     renderCalendar();
     updateKPIs();
     updateSelectedDateLabel();
   }
-}
+
+  function deleteWorkout() {
+    if (logs[selectedDateKey]) {
+      if (!Array.isArray(logs[selectedDateKey])) {
+        logs[selectedDateKey] = [logs[selectedDateKey]];
+      }
+
+      logs[selectedDateKey].pop();
+
+      if (logs[selectedDateKey].length === 0) {
+        delete logs[selectedDateKey];
+      }
+
+      localStorage.setItem('workout_logs_data', JSON.stringify(logs));
+      renderCalendar();
+      updateKPIs();
+      updateSelectedDateLabel();
+    }
+  }
+
   function changeMonth(delta) {
     currentViewDate.setMonth(currentViewDate.getMonth() + delta);
     renderCalendar();
   }
-  
+
   function updateKPIs() {
-  // HIGHLIGHT: Safely check arrays or legacy objects
-  const activeKeys = Object.keys(logs).filter(k => {
-    const val = logs[k];
-    if (Array.isArray(val)) return val.length > 0;
-    return val && val.completed;
-  }).sort();
+    const activeKeys = Object.keys(logs).filter(k => {
+      const val = logs[k];
+      if (Array.isArray(val)) return val.length > 0;
+      return val && val.completed;
+    }).sort();
 
-  document.getElementById('totalDays').innerText = activeKeys.length;
+    document.getElementById('totalDays').innerText = activeKeys.length;
 
-  const viewYear = currentViewDate.getFullYear();
-  const viewMonth = String(currentViewDate.getMonth() + 1).padStart(2, '0');
-  const monthPrefix = `${viewYear}-${viewMonth}`;
-  
-  const currentMonthDays = activeKeys.filter(k => k.startsWith(monthPrefix)).length;
-  document.getElementById('currentStreak').innerText = currentMonthDays;
+    const viewYear = currentViewDate.getFullYear();
+    const viewMonth = String(currentViewDate.getMonth() + 1).padStart(2, '0');
+    const monthPrefix = `${viewYear}-${viewMonth}`;
+    
+    const currentMonthDays = activeKeys.filter(k => k.startsWith(monthPrefix)).length;
+    document.getElementById('currentStreak').innerText = currentMonthDays;
 
-  let maxStreak = 0;
-  let tempStreak = 0;
+    let maxStreak = 0;
+    let tempStreak = 0;
 
-  for (let i = 0; i < activeKeys.length; i++) {
-    if (i === 0) {
-      tempStreak = 1;
-    } else {
-      const prev = new Date(activeKeys[i - 1]);
-      const curr = new Date(activeKeys[i]);
-      const diffDays = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
-      
-      if (diffDays === 1) {
-        tempStreak++;
-      } else {
+    // FIX #2: Safe local date parsing for streak calculation
+    const parseKeyToLocalDate = key => {
+      const parts = key.split('-').map(Number);
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    };
+
+    for (let i = 0; i < activeKeys.length; i++) {
+      if (i === 0) {
         tempStreak = 1;
+      } else {
+        const prev = parseKeyToLocalDate(activeKeys[i - 1]);
+        const curr = parseKeyToLocalDate(activeKeys[i]);
+        const diffDays = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+          tempStreak++;
+        } else {
+          tempStreak = 1;
+        }
       }
+      if (tempStreak > maxStreak) maxStreak = tempStreak;
     }
-    if (tempStreak > maxStreak) maxStreak = tempStreak;
-  }
 
-  document.getElementById('bestStreak').innerText = maxStreak;
-}
+    document.getElementById('bestStreak').innerText = maxStreak;
+  }
 
   init();
 </script>
-</body>
-</html>
