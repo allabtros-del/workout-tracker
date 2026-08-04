@@ -194,13 +194,24 @@
       num.innerText = d;
       cell.appendChild(num);
 
-      if (logs[cellDateKey]) {
-        const status = document.createElement('div');
-        status.className = 'day-status';
-        const icon = getIconForActivity(logs[cellDateKey].type);
-        status.innerHTML = `✅<br>${icon}`;
-        cell.appendChild(status);
-      }
+      // REPLACE THIS INSIDE renderCalendar():
+const dayLogs = logs[cellDateKey] || [];
+if (dayLogs.length > 0) {
+  const status = document.createElement('div');
+  status.className = 'day-status';
+  
+  // Handles both single object (legacy) or array (new multi-workout)
+  const firstLog = Array.isArray(dayLogs) ? dayLogs[0] : dayLogs;
+  const count = Array.isArray(dayLogs) ? dayLogs.length : 1;
+  const primaryIcon = getIconForActivity(firstLog.type);
+
+  if (count === 1) {
+    status.innerHTML = `✅<br>${primaryIcon}`;
+  } else {
+    status.innerHTML = `✅<br>${primaryIcon}<div style="font-size: 0.6rem; background: #334155; padding: 1px 4px; border-radius: 4px; color: #a7f3d0; margin-top: 2px;">+${count - 1}</div>`;
+  }
+  cell.appendChild(status);
+}
 
       cell.onclick = () => {
         selectedDateKey = cellDateKey;
