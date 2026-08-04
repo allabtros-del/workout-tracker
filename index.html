@@ -297,11 +297,15 @@ if (dayLogs.length > 0) {
   }
   
   function updateKPIs() {
-  // 1. Total Workout Days (All time)
-  const activeKeys = Object.keys(logs).filter(k => logs[k] && logs[k].completed).sort();
+  // HIGHLIGHT: Safely check arrays or legacy objects
+  const activeKeys = Object.keys(logs).filter(k => {
+    const val = logs[k];
+    if (Array.isArray(val)) return val.length > 0;
+    return val && val.completed;
+  }).sort();
+
   document.getElementById('totalDays').innerText = activeKeys.length;
 
-  // 2. Total Workout Days in the currently displayed month
   const viewYear = currentViewDate.getFullYear();
   const viewMonth = String(currentViewDate.getMonth() + 1).padStart(2, '0');
   const monthPrefix = `${viewYear}-${viewMonth}`;
@@ -309,7 +313,6 @@ if (dayLogs.length > 0) {
   const currentMonthDays = activeKeys.filter(k => k.startsWith(monthPrefix)).length;
   document.getElementById('currentStreak').innerText = currentMonthDays;
 
-  // 3. Longest Streak (Best Streak)
   let maxStreak = 0;
   let tempStreak = 0;
 
