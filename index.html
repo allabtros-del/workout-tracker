@@ -52,6 +52,34 @@
   width: 100%;
 }
 
+/* Center title and arrows together with clear spacing */
+.cal-header { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 16px; 
+  margin-bottom: 12px; 
+}
+
+/* Header title styling */
+.cal-title { 
+  font-weight: bold; 
+  font-size: 1rem; 
+}
+
+/* Arrow buttons styling */
+.cal-nav { 
+  background: var(--border); 
+  color: var(--text); 
+  border: none; 
+  padding: 4px 10px; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  font-size: 0.8rem; 
+}
+.cal-nav:hover {
+  background: var(--text-muted);
+}
 /* Fix day cells so days 30 & 31 don't break out over the log buttons */
 .day-cell {
   min-height: 46px; /* Replaces fixed aspect-ratio: 1 */
@@ -68,7 +96,10 @@
   transition: all 0.15s ease;
   box-sizing: border-box;
 }
-
+.day-cell.selected { 
+  border: 2px solid #38bdf8 !important; 
+  background: #1e293b; 
+}
 .day-num { 
   font-size: 0.65rem; 
   align-self: flex-start; 
@@ -121,14 +152,14 @@
   </div>
 
   <!-- Calendar -->
-  <div class="calendar-card">
-    <div class="cal-header">
-      <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
-      <div class="cal-title" id="calMonthTitle">July 2026</div>
-      <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
-    </div>
-    <div class="cal-grid" id="calGrid"></div>
+<div class="calendar-card">
+  <div class="cal-header">
+    <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
+    <div class="cal-title" id="calMonthTitle">July 2026</div>
+    <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
   </div>
+  <div class="cal-grid" id="calGrid"></div>
+</div>
 
   <!-- Control Box -->
   <div class="control-card">
