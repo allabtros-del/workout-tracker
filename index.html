@@ -237,7 +237,12 @@ if (dayLogs.length > 0) {
   }
 
   function updateSelectedDateLabel() {
-  const count = logs[selectedDateKey] ? logs[selectedDateKey].length : 0;
+  // HIGHLIGHT: Count total entries safely without throwing undefined errors
+  const entry = logs[selectedDateKey];
+  let count = 0;
+  if (entry) {
+    count = Array.isArray(entry) ? entry.length : 1;
+  }
   document.getElementById('selectedDateLabel').innerText = `Selected Date: ${selectedDateKey} (${count} workout${count !== 1 ? 's' : ''})`;
 }
 
