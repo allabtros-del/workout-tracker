@@ -35,25 +35,26 @@
     
     .weekday-hdr { text-align: center; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; padding-bottom: 4px; }
     
-     /* Update .calendar-card to contain grid content smoothly */
+   /* Prevent calendar container from overflowing */
 .calendar-card { 
   background: var(--card-bg); 
   border: 1px solid var(--border); 
   border-radius: 12px; 
   padding: 12px; 
-  overflow: hidden; /* Prevents cell overflow */
+  width: 100%;
 }
 
-/* Reduce gap on tight mobile screens */
+/* Ensure all 7 columns fit on narrow screens */
 .cal-grid { 
   display: grid; 
   grid-template-columns: repeat(7, 1fr); 
-  gap: 4px; /* Reduced from 6px for tighter fit */
+  gap: 4px;
+  width: 100%;
 }
 
-/* Make day cells adapt dynamically without forcing fixed square aspect ratios on narrow viewports */
+/* Fix day cells so days 30 & 31 don't break out over the log buttons */
 .day-cell {
-  min-height: 48px; /* Replaces fixed aspect-ratio: 1 so heights collapse fitly */
+  min-height: 46px; /* Replaces fixed aspect-ratio: 1 */
   border-radius: 6px; 
   background: #0f172a; 
   border: 1px solid var(--border);
@@ -61,25 +62,26 @@
   flex-direction: column; 
   align-items: center; 
   justify-content: space-between;
-  padding: 2px 1px; 
+  padding: 3px 2px; 
   cursor: pointer; 
   position: relative; 
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .day-num { 
-  font-size: 0.65rem; /* Scaled down slightly for mobile alignment */
+  font-size: 0.65rem; 
   align-self: flex-start; 
   color: var(--text-muted); 
   padding-left: 2px;
 }
 
 .day-status { 
-  font-size: 0.8rem; 
+  font-size: 0.75rem; 
   margin-top: auto; 
   margin-bottom: auto; 
   text-align: center; 
-  line-height: 1; 
+  line-height: 1.1; 
 }
 
     /* Controls */
