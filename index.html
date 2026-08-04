@@ -264,23 +264,27 @@ function logWorkout() {
   updateSelectedDateLabel();
 }
 
-function deleteWorkout() {
-  if (logs[selectedDateKey] && logs[selectedDateKey].length > 0) {
-    // Remove the latest workout logged for the selected date
+  function deleteWorkout() {
+  if (logs[selectedDateKey]) {
+    // If it's an old single object, turn it into an array first
+    if (!Array.isArray(logs[selectedDateKey])) {
+      logs[selectedDateKey] = [logs[selectedDateKey]];
+    }
+
+    // Remove the last item
     logs[selectedDateKey].pop();
-    
-    // If no workouts remain for this date, delete the date key
+
+    // If empty, clear the key completely
     if (logs[selectedDateKey].length === 0) {
       delete logs[selectedDateKey];
     }
-    
+
     localStorage.setItem('workout_logs_data', JSON.stringify(logs));
     renderCalendar();
     updateKPIs();
     updateSelectedDateLabel();
   }
 }
-
   function changeMonth(delta) {
     currentViewDate.setMonth(currentViewDate.getMonth() + delta);
     renderCalendar();
