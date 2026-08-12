@@ -307,7 +307,7 @@
     updateSelectedDateLabel();
   }
 
-  function renderCalendar() {
+    function renderCalendar() {
     const grid = document.getElementById('calGrid');
     grid.innerHTML = '';
 
@@ -353,8 +353,13 @@
 
           if (dayLogs.length === 1) {
             status.innerHTML = `✅<br>${primaryIcon}`;
+            cell.title = `${dayLogs[0].type}`;
           } else {
             status.innerHTML = `✅<br>${primaryIcon}<div style="font-size: 0.6rem; background: #334155; padding: 1px 4px; border-radius: 4px; color: #a7f3d0; margin-top: 2px;">+${dayLogs.length - 1}</div>`;
+            
+            // Native tooltip showing all logged activities on hover
+            const workoutList = dayLogs.map((l, i) => `${i + 1}. ${getIconForActivity(l.type)} ${l.type}`).join('\n');
+            cell.title = `Workouts for ${cellDateKey}:\n${workoutList}`;
           }
           cell.appendChild(status);
         }
