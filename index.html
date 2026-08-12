@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Custom App Icon for Phone Home Screen -->
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
 <html lang="en">
 <head>
+  <!-- Custom App Icon for Phone Home Screen -->
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
   <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,6 +24,7 @@
     body { background-color: var(--bg); color: var(--text); padding: 16px; display: flex; justify-content: center; }
     .container { max-width: 600px; width: 100%; display: flex; flex-direction: column; gap: 16px; }
 
+    /* Top Quote Styling */
     .quote-container {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -52,35 +53,6 @@
       transition: background 0.15s ease;
     }
     .btn-refresh-quote:hover { background: #475569; }
--container {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .quote-text {
-      font-size: 0.85rem;
-      color: #a7f3d0;
-      font-style: italic;
-      line-height: 1.3;
-    }
-    .btn-refresh-quote {
-      background: var(--border);
-      border: none;
-      color: var(--text);
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      white-space: nowrap;
-      transition: background 0.15s ease;
-    }
-    .btn-refresh-quote:hover { background: #475569; }
-
 
     /* KPIs */
     .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -90,85 +62,79 @@
     
     .weekday-hdr { text-align: center; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; padding-bottom: 4px; }
     
-   /* Prevent calendar container from overflowing */
-.calendar-card { 
-  background: var(--card-bg); 
-  border: 1px solid var(--border); 
-  border-radius: 12px; 
-  padding: 12px; 
-  width: 100%;
-}
+    /* Calendar Card */
+    .calendar-card { 
+      background: var(--card-bg); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      padding: 12px; 
+      width: 100%;
+    }
 
-/* Ensure all 7 columns fit on narrow screens */
-.cal-grid { 
-  display: grid; 
-  grid-template-columns: repeat(7, 1fr); 
-  gap: 4px;
-  width: 100%;
-}
+    .cal-grid { 
+      display: grid; 
+      grid-template-columns: repeat(7, 1fr); 
+      gap: 4px;
+      width: 100%;
+    }
 
-/* Center title and arrows together with clear spacing */
-.cal-header { 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  gap: 16px; 
-  margin-bottom: 12px; 
-}
+    .cal-header { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 16px; 
+      margin-bottom: 12px; 
+    }
 
-/* Header title styling */
-.cal-title { 
-  font-weight: bold; 
-  font-size: 1rem; 
-}
+    .cal-title { 
+      font-weight: bold; 
+      font-size: 1rem; 
+    }
 
-/* Arrow buttons styling */
-.cal-nav { 
-  background: var(--border); 
-  color: var(--text); 
-  border: none; 
-  padding: 4px 10px; 
-  border-radius: 6px; 
-  cursor: pointer; 
-  font-size: 0.8rem; 
-}
-.cal-nav:hover {
-  background: var(--text-muted);
-}
-/* Fix day cells so days 30 & 31 don't break out over the log buttons */
-.day-cell {
-  min-height: 46px; /* Replaces fixed aspect-ratio: 1 */
-  border-radius: 6px; 
-  background: #0f172a; 
-  border: 1px solid var(--border);
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: space-between;
-  padding: 3px 2px; 
-  cursor: pointer; 
-  position: relative; 
-  transition: all 0.15s ease;
-  box-sizing: border-box;
-}
-.day-cell.selected { 
-  border: 2px solid #38bdf8 !important; 
-  background: #1e293b; 
-}
-.day-num { 
-  font-size: 0.65rem; 
-  align-self: flex-start; 
-  color: var(--text-muted); 
-  padding-left: 2px;
-}
+    .cal-nav { 
+      background: var(--border); 
+      color: var(--text); 
+      border: none; 
+      padding: 4px 10px; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-size: 0.8rem; 
+    }
+    .cal-nav:hover { background: var(--text-muted); }
 
-.day-status { 
-  font-size: 0.75rem; 
-  margin-top: auto; 
-  margin-bottom: auto; 
-  text-align: center; 
-  line-height: 1.1; 
-}
+    .day-cell {
+      min-height: 46px;
+      border-radius: 6px; 
+      background: #0f172a; 
+      border: 1px solid var(--border);
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: space-between;
+      padding: 3px 2px; 
+      cursor: pointer; 
+      position: relative; 
+      transition: all 0.15s ease;
+      box-sizing: border-box;
+    }
+    .day-cell.selected { 
+      border: 2px solid #38bdf8 !important; 
+      background: #1e293b; 
+    }
+    .day-num { 
+      font-size: 0.65rem; 
+      align-self: flex-start; 
+      color: var(--text-muted); 
+      padding-left: 2px;
+    }
+
+    .day-status { 
+      font-size: 0.75rem; 
+      margin-top: auto; 
+      margin-bottom: auto; 
+      text-align: center; 
+      line-height: 1.1; 
+    }
 
     /* Controls */
     .control-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -192,7 +158,7 @@
 </head>
 <body>
 
-
+<div class="container">
   <!-- Live Dynamic Quote Bar -->
   <div class="quote-container">
     <div class="quote-text" id="quoteBar">Fetching today's motivation...</div>
@@ -210,14 +176,14 @@
   </div>
 
   <!-- Calendar -->
-<div class="calendar-card">
-  <div class="cal-header">
-    <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
-    <div class="cal-title" id="calMonthTitle">July 2026</div>
-    <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
+  <div class="calendar-card">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
+      <div class="cal-title" id="calMonthTitle">July 2026</div>
+      <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
   </div>
-  <div class="cal-grid" id="calGrid"></div>
-</div>
 
   <!-- Control Box -->
   <div class="control-card">
@@ -254,7 +220,7 @@
     'Cycling': '🚴', 'Pilates': '🧘', 'Climbing': '🧗'
   };
   
-    // Offline Hardcoded Quotes Array
+  // Offline Hardcoded Quotes Array
   const FALLBACK_QUOTES = [
     '"Consistency is what transforms average into excellence."',
     '"Small daily improvements over time lead to stunning results."',
@@ -334,9 +300,8 @@
     return `${y}-${m}-${day}`;
   }
 
-    function init() {
-    fetchQuote(); // <-- Add or verify this line is here
-    document.getElementById('weightDateInput').value = selectedDateKey;
+  function init() {
+    fetchQuote();
     renderCalendar();
     updateKPIs();
     updateSelectedDateLabel();
@@ -405,7 +370,6 @@
     }
   }
 
-  // Guard against null or undefined activity types
   function getIconForActivity(type) {
     if (!type) return '🎯';
     if (ICON_MAP[type]) return ICON_MAP[type];
@@ -472,12 +436,12 @@
   }
 
   function changeMonth(delta) {
-  currentViewDate.setMonth(currentViewDate.getMonth() + delta);
-  renderCalendar();
-  updateKPIs();
-}
+    currentViewDate.setMonth(currentViewDate.getMonth() + delta);
+    renderCalendar();
+    updateKPIs();
+  }
 
-    function updateKPIs() {
+  function updateKPIs() {
     const activeKeys = Object.keys(logs).filter(k => {
       const val = logs[k];
       if (Array.isArray(val)) return val.length > 0;
@@ -486,7 +450,6 @@
 
     document.getElementById('totalDays').innerText = activeKeys.length;
 
-    // Filter workouts by the currently displayed calendar month
     const viewYear = currentViewDate.getFullYear();
     const viewMonthIdx = currentViewDate.getMonth();
     const viewMonthStr = String(viewMonthIdx + 1).padStart(2, '0');
@@ -523,6 +486,7 @@
     document.getElementById('bestStreak').innerText = maxStreak;
   }
 
+  // Start app
   init();
 </script>
 </body>
