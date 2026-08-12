@@ -351,11 +351,12 @@
   }
 
   function changeMonth(delta) {
-    currentViewDate.setMonth(currentViewDate.getMonth() + delta);
-    renderCalendar();
-  }
+  currentViewDate.setMonth(currentViewDate.getMonth() + delta);
+  renderCalendar();
+  updateKPIs();
+}
 
-  function updateKPIs() {
+    function updateKPIs() {
     const activeKeys = Object.keys(logs).filter(k => {
       const val = logs[k];
       if (Array.isArray(val)) return val.length > 0;
@@ -364,17 +365,18 @@
 
     document.getElementById('totalDays').innerText = activeKeys.length;
 
+    // Filter workouts by the currently displayed calendar month
     const viewYear = currentViewDate.getFullYear();
-    const viewMonth = String(currentViewDate.getMonth() + 1).padStart(2, '0');
-    const monthPrefix = `${viewYear}-${viewMonth}`;
+    const viewMonthIdx = currentViewDate.getMonth();
+    const viewMonthStr = String(viewMonthIdx + 1).padStart(2, '0');
+    const monthPrefix = `${viewYear}-${viewMonthStr}`;
     
-    const currentMonthDays = activeKeys.filter(k => k.startsWith(monthPrefix)).length;
-    document.getElementById('currentStreak').innerText = currentMonthDays;
+    const activeDaysInViewMonth = activeKeys.filter(k => k.startsWith(monthPrefix)).length;
+    document.getElementById('currentStreak').innerText = activeDaysInViewMonth;
 
     let maxStreak = 0;
     let tempStreak = 0;
 
-    // Safe local date parser to avoid timezone shifts
     const parseKeyToLocalDate = key => {
       const parts = key.split('-').map(Number);
       return new Date(parts[0], parts[1] - 1, parts[2]);
