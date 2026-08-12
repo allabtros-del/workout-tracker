@@ -24,8 +24,63 @@
     body { background-color: var(--bg); color: var(--text); padding: 16px; display: flex; justify-content: center; }
     .container { max-width: 600px; width: 100%; display: flex; flex-direction: column; gap: 16px; }
 
-    /* Top Quote */
-    .quote-bar { background: var(--card-bg); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; text-align: center; font-size: 0.85rem; color: #a7f3d0; font-style: italic; }
+    .quote-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .quote-text {
+      font-size: 0.85rem;
+      color: #a7f3d0;
+      font-style: italic;
+      line-height: 1.3;
+    }
+    .btn-refresh-quote {
+      background: var(--border);
+      border: none;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .btn-refresh-quote:hover { background: #475569; }
+-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .quote-text {
+      font-size: 0.85rem;
+      color: #a7f3d0;
+      font-style: italic;
+      line-height: 1.3;
+    }
+    .btn-refresh-quote {
+      background: var(--border);
+      border: none;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .btn-refresh-quote:hover { background: #475569; }
+
 
     /* KPIs */
     .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -137,9 +192,12 @@
 </head>
 <body>
 
-<div class="container">
-  <!-- Top Quote -->
-  <div class="quote-bar" id="quoteBar">"Consistency is what transforms average into excellence."</div>
+
+  <!-- Live Dynamic Quote Bar -->
+  <div class="quote-container">
+    <div class="quote-text" id="quoteBar">Fetching today's motivation...</div>
+    <button class="btn-refresh-quote" onclick="fetchQuote()">🔄 New Quote</button>
+  </div>
 
   <!-- KPIs -->
   <div class="kpi-row">
@@ -195,13 +253,75 @@
     'Yoga': '🧘', 'Walking': '🚶', 'Aerobics': '🤸', 'Boxing': '🥊',
     'Cycling': '🚴', 'Pilates': '🧘', 'Climbing': '🧗'
   };
-
-  const QUOTES = [
+  
+    // Offline Hardcoded Quotes Array
+  const FALLBACK_QUOTES = [
     '"Consistency is what transforms average into excellence."',
     '"Small daily improvements over time lead to stunning results."',
     '"Take care of your body. It is the only place you have to live in."',
-    '"Fitness is a mind game. Your body can stand almost anything."'
+    '"Fitness is a mind game. Your body can stand almost anything."',
+    '"Action is the foundational key to all success." — Pablo Picasso',
+    '"You don’t have to be extreme, just consistent."',
+    '"Success starts with self-discipline."',
+    '"Energy flows where attention goes."',
+    '"The secret of getting ahead is getting started."',
+    '"Work hard in silence, let your success be your noise."'
   ];
+
+  // Live Fetch with Multi-Layer API Fallbacks
+  async function fetchQuote() {
+    const quoteEl = document.getElementById('quoteBar');
+    if (!quoteEl) return;
+    
+    quoteEl.innerText = 'Fetching live motivation...';
+
+    const primaryUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://zenquotes.io/api/random');
+    const fallbackUrl = 'https://type.fit/api/quotes';
+
+    // 1. Try Primary Live API (ZenQuotes)
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
+      const res = await fetch(primaryUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data[0]?.q) {
+          quoteEl.innerText = `"${data[0].q}" — ${data[0].a || 'Unknown'}`;
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Primary quote API offline, trying fallback API...');
+    }
+
+    // 2. Try Secondary Live API
+    try {
+      const controller2 = new AbortController();
+      const timeoutId2 = setTimeout(() => controller2.abort(), 3000);
+
+      const res2 = await fetch(fallbackUrl, { signal: controller2.signal });
+      clearTimeout(timeoutId2);
+
+      if (res2.ok) {
+        const quotes = await res2.json();
+        if (Array.isArray(quotes) && quotes.length > 0) {
+          const rand = quotes[Math.floor(Math.random() * quotes.length)];
+          const author = rand.author ? rand.author.replace(', type.fit', '') : 'Unknown';
+          quoteEl.innerText = `"${rand.text}" — ${author}`;
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Secondary quote API offline, using hardcoded fallback.');
+    }
+
+    // 3. Fallback to Hardcoded List if offline/error
+    const randFallback = FALLBACK_QUOTES[Math.floor(Math.random() * FALLBACK_QUOTES.length)];
+    quoteEl.innerText = randFallback;
+  }
 
   let currentViewDate = new Date();
   let selectedDateKey = getFormattedDateKey(new Date());
@@ -214,8 +334,9 @@
     return `${y}-${m}-${day}`;
   }
 
-  function init() {
-    document.getElementById('quoteBar').innerText = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    function init() {
+    fetchQuote(); // <-- Add or verify this line is here
+    document.getElementById('weightDateInput').value = selectedDateKey;
     renderCalendar();
     updateKPIs();
     updateSelectedDateLabel();
