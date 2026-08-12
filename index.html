@@ -135,6 +135,47 @@
       text-align: center; 
       line-height: 1.1; 
     }
+    
+         /* Custom Tooltip Overlay for Multi-Workout Days */
+    .cell-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #0f172a;
+      color: var(--text);
+      border: 1px solid #38bdf8;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.72rem;
+      white-space: nowrap;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    .cell-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #38bdf8 transparent transparent transparent;
+    }
+
+    /* Show on hover OR when tapped/selected on mobile */
+    .day-cell:hover .cell-tooltip,
+    .day-cell.selected .cell-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
 
     /* Controls */
     .control-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -307,7 +348,7 @@
     updateSelectedDateLabel();
   }
 
-    function renderCalendar() {
+       function renderCalendar() {
     const grid = document.getElementById('calGrid');
     grid.innerHTML = '';
 
@@ -353,13 +394,15 @@
 
           if (dayLogs.length === 1) {
             status.innerHTML = `✅<br>${primaryIcon}`;
-            cell.title = `${dayLogs[0].type}`;
           } else {
             status.innerHTML = `✅<br>${primaryIcon}<div style="font-size: 0.6rem; background: #334155; padding: 1px 4px; border-radius: 4px; color: #a7f3d0; margin-top: 2px;">+${dayLogs.length - 1}</div>`;
             
-            // Native tooltip showing all logged activities on hover
-            const workoutList = dayLogs.map((l, i) => `${i + 1}. ${getIconForActivity(l.type)} ${l.type}`).join('\n');
-            cell.title = `Workouts for ${cellDateKey}:\n${workoutList}`;
+            // Creates the tooltip content for multi-workout days
+            const tooltip = document.createElement('div');
+            tooltip.className = 'cell-tooltip';
+            const workoutList = dayLogs.map((l, i) => `${i + 1}. ${getIconForActivity(l.type)} ${l.type}`).join('<br>');
+            tooltip.innerHTML = `<strong style="color:#38bdf8;">Workouts (${dayLogs.length}):</strong><br>${workoutList}`;
+            cell.appendChild(tooltip);
           }
           cell.appendChild(status);
         }
@@ -374,6 +417,7 @@
       grid.appendChild(cell);
     }
   }
+
 
   function getIconForActivity(type) {
     if (!type) return '🎯';
