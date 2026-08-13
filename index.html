@@ -136,7 +136,7 @@
       line-height: 1.1; 
     }
     
-         /* Custom Tooltip Overlay for Multi-Workout Days */
+    /* Custom Tooltip Overlay for Multi-Workout Days */
     .cell-tooltip {
       visibility: hidden;
       opacity: 0;
@@ -255,8 +255,6 @@
 </div>
 
 <script>
-
-  
 // --- DEVTOOLS & STORAGE DIAGNOSTIC LOG SYSTEM ---
 const APP_LOG_HISTORY = [];
 
@@ -266,7 +264,6 @@ function logSystemEvent(level, message, data = null) {
   
   APP_LOG_HISTORY.push({ timestamp, level, message, data });
   
-  // Cap in-memory history to last 200 events
   if (APP_LOG_HISTORY.length > 200) APP_LOG_HISTORY.shift();
 
   if (level === 'ERROR') {
@@ -278,7 +275,7 @@ function logSystemEvent(level, message, data = null) {
   }
 }
 
-// Request Persistent Storage to prevent mobile browser cache clearing
+// Request Persistent Storage
 async function requestPersistentStorage() {
   if (navigator.storage && navigator.storage.persist) {
     const isPersisted = await navigator.storage.persisted();
@@ -327,14 +324,11 @@ function safeSaveLogs(actionName) {
 }
 
 // --- CONSOLE UTILITIES FOR DEVTOOLS EXPORT/IMPORT ---
-// Type exportWorkoutData() or importWorkoutData(...) in Chrome Console
-
 window.exportWorkoutData = function() {
   const dataStr = localStorage.getItem('workout_logs_data') || '{}';
   console.log('%c--- WORKOUT DATA EXPORT JSON ---', 'color: #10b981; font-weight: bold;');
   console.log(dataStr);
   
-  // Copy directly to clipboard if supported
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(dataStr);
     console.log('%c[Copied to clipboard automatically!]', 'color: #38bdf8;');
@@ -368,7 +362,6 @@ window.getAppLogs = function() {
   return APP_LOG_HISTORY;
 };
 
-// Print instructions in DevTools
 console.log(
   '%c[Workout Tracker Loaded]%c Run exportWorkoutData(), importWorkoutData(json), or getAppLogs() in this console.',
   'color: #10b981; font-weight: bold;',
@@ -381,7 +374,6 @@ console.log(
     'Cycling': '🚴', 'Pilates': '🧘', 'Climbing': '🧗'
   };
   
-  // Offline Hardcoded Quotes Array
   const FALLBACK_QUOTES = [
     '"Consistency is what transforms average into excellence."',
     '"Small daily improvements over time lead to stunning results."',
@@ -395,7 +387,6 @@ console.log(
     '"Work hard in silence, let your success be your noise."'
   ];
 
-  // Live Fetch with Multi-Layer API Fallbacks
   async function fetchQuote() {
     const quoteEl = document.getElementById('quoteBar');
     if (!quoteEl) return;
@@ -405,7 +396,6 @@ console.log(
     const primaryUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://zenquotes.io/api/random');
     const fallbackUrl = 'https://type.fit/api/quotes';
 
-    // 1. Try Primary Live API (ZenQuotes)
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -424,7 +414,6 @@ console.log(
       console.warn('Primary quote API offline, trying fallback API...');
     }
 
-    // 2. Try Secondary Live API
     try {
       const controller2 = new AbortController();
       const timeoutId2 = setTimeout(() => controller2.abort(), 3000);
@@ -445,14 +434,12 @@ console.log(
       console.warn('Secondary quote API offline, using hardcoded fallback.');
     }
 
-    // 3. Fallback to Hardcoded List if offline/error
     const randFallback = FALLBACK_QUOTES[Math.floor(Math.random() * FALLBACK_QUOTES.length)];
     quoteEl.innerText = randFallback;
   }
 
   let currentViewDate = new Date();
   let selectedDateKey = getFormattedDateKey(new Date());
-  let logs = JSON.parse(localStorage.getItem('workout_logs_data') || '{}');
 
   function getFormattedDateKey(d) {
     const y = d.getFullYear();
@@ -468,7 +455,7 @@ console.log(
     updateSelectedDateLabel();
   }
 
-       function renderCalendar() {
+  function renderCalendar() {
     const grid = document.getElementById('calGrid');
     grid.innerHTML = '';
 
@@ -503,7 +490,6 @@ console.log(
       num.innerText = d;
       cell.appendChild(num);
 
-      // Handle both legacy objects and multi-workout arrays
       const rawEntry = logs[cellDateKey];
       if (rawEntry) {
         const dayLogs = Array.isArray(rawEntry) ? rawEntry : [rawEntry];
@@ -517,7 +503,6 @@ console.log(
           } else {
             status.innerHTML = `✅<br>${primaryIcon}<div style="font-size: 0.6rem; background: #334155; padding: 1px 4px; border-radius: 4px; color: #a7f3d0; margin-top: 2px;">+${dayLogs.length - 1}</div>`;
             
-            // Creates the tooltip content for multi-workout days
             const tooltip = document.createElement('div');
             tooltip.className = 'cell-tooltip';
             const workoutList = dayLogs.map((l, i) => `${i + 1}. ${getIconForActivity(l.type)} ${l.type}`).join('<br>');
@@ -537,7 +522,6 @@ console.log(
       grid.appendChild(cell);
     }
   }
-
 
   function getIconForActivity(type) {
     if (!type) return '🎯';
@@ -578,7 +562,7 @@ console.log(
     }
 
     logs[selectedDateKey].push({ type: typeSel, completed: true, timestamp: new Date().getTime() });
-    localStorage.setItem('workout_logs_data', JSON.stringify(logs));
+    safeSaveLogs('LOG_WORKOUT');
     
     renderCalendar();
     updateKPIs();
@@ -597,7 +581,7 @@ console.log(
         delete logs[selectedDateKey];
       }
 
-      localStorage.setItem('workout_logs_data', JSON.stringify(logs));
+      safeSaveLogs('DELETE_WORKOUT');
       renderCalendar();
       updateKPIs();
       updateSelectedDateLabel();
@@ -655,12 +639,13 @@ console.log(
     document.getElementById('bestStreak').innerText = maxStreak;
   }
 
+  // Start app
+  init();
+</script>
+
 <!-- Mobile On-Screen DevTools -->
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>eruda.init();</script>
 
-  // Start app
-  init();
-</script>
 </body>
 </html>
