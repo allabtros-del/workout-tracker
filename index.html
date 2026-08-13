@@ -645,24 +645,29 @@ console.log(
 
 <!-- Mobile On-Screen DevTools -->
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
+<script>
+  eruda.init();
+</script>
 
-<!-- Mobile On-Screen DevTools -->
-<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
-
-<!-- Position Eruda button at the Top-Right corner -->
+<!-- Pin Eruda Gear Icon to Top Right Next to Quote Button -->
 <style>
-  .eruda-entry-btn {
-    top: 16px !important;
-    right: 16px !important;
+  div.eruda-entry-btn {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
     bottom: auto !important;
     left: auto !important;
-    width: 32px !important;
-    height: 32px !important;
-    opacity: 0.6;
+    width: 34px !important;
+    height: 34px !important;
+    opacity: 0.7;
+    z-index: 9999 !important;
+  }
+  div.eruda-entry-btn .eruda-icon-tool {
+    width: 18px !important;
+    height: 18px !important;
   }
 </style>
+
 
 </body>
 </html>
