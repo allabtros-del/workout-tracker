@@ -255,6 +255,126 @@
 </div>
 
 <script>
+
+  
+// --- DEVTOOLS & STORAGE DIAGNOSTIC LOG SYSTEM ---
+const APP_LOG_HISTORY = [];
+
+function logSystemEvent(level, message, data = null) {
+  const timestamp = new Date().toISOString();
+  const logEntry = `[${timestamp}] [${level}] ${message}`;
+  
+  APP_LOG_HISTORY.push({ timestamp, level, message, data });
+  
+  // Cap in-memory history to last 200 events
+  if (APP_LOG_HISTORY.length > 200) APP_LOG_HISTORY.shift();
+
+  if (level === 'ERROR') {
+    console.error(logEntry, data || '');
+  } else if (level === 'WARN') {
+    console.warn(logEntry, data || '');
+  } else {
+    console.log(logEntry, data || '');
+  }
+}
+
+// Request Persistent Storage to prevent mobile browser cache clearing
+async function requestPersistentStorage() {
+  if (navigator.storage && navigator.storage.persist) {
+    const isPersisted = await navigator.storage.persisted();
+    logSystemEvent('INFO', `Storage persistence status: ${isPersisted}`);
+    
+    if (!isPersisted) {
+      const granted = await navigator.storage.persist();
+      logSystemEvent('INFO', `Requested storage persistence. Granted: ${granted}`);
+    }
+  } else {
+    logSystemEvent('WARN', 'Storage Manager API (persist) not supported in this browser.');
+  }
+}
+requestPersistentStorage();
+
+// Safe LocalStorage Load
+let logs = {};
+try {
+  const rawLogs = localStorage.getItem('workout_logs_data');
+  if (rawLogs) {
+    logs = JSON.parse(rawLogs);
+    logSystemEvent('INFO', `Loaded ${Object.keys(logs).length} active date keys from LocalStorage.`);
+  } else {
+    logSystemEvent('INFO', 'No workout data found in LocalStorage. Initialized empty store.');
+  }
+} catch (err) {
+  logSystemEvent('ERROR', 'Failed to parse LocalStorage workout_logs_data', err);
+}
+
+// Safe LocalStorage Save
+function safeSaveLogs(actionName) {
+  try {
+    const stringified = JSON.stringify(logs);
+    localStorage.setItem('workout_logs_data', stringified);
+    
+    const bytes = new Blob([stringified]).size;
+    const kb = (bytes / 1024).toFixed(2);
+    
+    logSystemEvent('INFO', `[${actionName}] Saved ${Object.keys(logs).length} date entries (${kb} KB) to LocalStorage.`);
+    return true;
+  } catch (err) {
+    logSystemEvent('ERROR', `[${actionName}] Failed to save to LocalStorage`, err);
+    alert('Warning: Workout data could not be saved to your browser storage.');
+    return false;
+  }
+}
+
+// --- CONSOLE UTILITIES FOR DEVTOOLS EXPORT/IMPORT ---
+// Type exportWorkoutData() or importWorkoutData(...) in Chrome Console
+
+window.exportWorkoutData = function() {
+  const dataStr = localStorage.getItem('workout_logs_data') || '{}';
+  console.log('%c--- WORKOUT DATA EXPORT JSON ---', 'color: #10b981; font-weight: bold;');
+  console.log(dataStr);
+  
+  // Copy directly to clipboard if supported
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(dataStr);
+    console.log('%c[Copied to clipboard automatically!]', 'color: #38bdf8;');
+  }
+  return JSON.parse(dataStr);
+};
+
+window.importWorkoutData = function(jsonStringOrObject) {
+  try {
+    const parsed = typeof jsonStringOrObject === 'string' 
+      ? JSON.parse(jsonStringOrObject) 
+      : jsonStringOrObject;
+
+    if (typeof parsed !== 'object' || parsed === null) throw new Error('Invalid data format');
+
+    logs = parsed;
+    safeSaveLogs('CONSOLE_IMPORT');
+    renderCalendar();
+    updateKPIs();
+    updateSelectedDateLabel();
+    logSystemEvent('INFO', 'Successfully imported workout data via Console.');
+    console.log('%cData imported and calendar refreshed!', 'color: #10b981; font-weight: bold;');
+  } catch (e) {
+    logSystemEvent('ERROR', 'Failed console data import', e);
+    console.error('Import failed. Please pass a valid JSON string or object.');
+  }
+};
+
+window.getAppLogs = function() {
+  console.table(APP_LOG_HISTORY);
+  return APP_LOG_HISTORY;
+};
+
+// Print instructions in DevTools
+console.log(
+  '%c[Workout Tracker Loaded]%c Run exportWorkoutData(), importWorkoutData(json), or getAppLogs() in this console.',
+  'color: #10b981; font-weight: bold;',
+  'color: #94a3b8;'
+);
+
   const ICON_MAP = {
     'Home': '🏠', 'Strength': '🏋️', 'Swimming': '🏊', 'Cardio': '🏃',
     'Yoga': '🧘', 'Walking': '🚶', 'Aerobics': '🤸', 'Boxing': '🥊',
