@@ -234,16 +234,16 @@
       <label for="chkDone">30 Minutes Completed</label>
     </div>
     
-    <select id="workoutSelect" onchange="toggleCustomInput()">
-      <option value="Home">🏠 Home Workout</option>
-      <option value="Strength">🏋️ Strength Training</option>
-      <option value="Swimming">🏊 Swimming</option>
-      <option value="Cardio">🏃 Cardio / Running</option>
-      <option value="Yoga">🧘 Yoga / Stretching</option>
-      <option value="Walking">🚶 Walking</option>
-      <option value="Aerobics">🤸 Aerobics</option>
-      <option value="CUSTOM">+ Add Custom Workout...</option>
-    </select>
+   <!-- Workout Selection Dropdown -->
+<label for="workoutType">Select Workout:</label>
+<select id="workoutType" name="workoutType">
+  <option value="cycling">Cycling</option>
+  <option value="running">Running</option>
+  <option value="swimming">Swimming</option>
+  <option value="walking">Walking</option>
+  <option value="strength">Strength Training</option>
+  <option value="hiit">HIIT</option>
+</select>
 
     <input type="text" id="customInput" placeholder="Type custom workout (e.g. Kickboxing, Pilates)" style="display: none;" />
 
