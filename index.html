@@ -220,7 +220,7 @@
   <div class="calendar-card">
     <div class="cal-header">
       <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
-      <div class="cal-title" id="calMonthTitle">July 2026</div>
+      <div class="cal-title" id="calMonthTitle">August 2026</div>
       <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
@@ -234,16 +234,17 @@
       <label for="chkDone">30 Minutes Completed</label>
     </div>
     
-   <!-- Workout Selection Dropdown -->
-<label for="workoutType">Select Workout:</label>
-<select id="workoutType" name="workoutType">
-  <option value="cycling">Cycling</option>
-  <option value="running">Running</option>
-  <option value="swimming">Swimming</option>
-  <option value="walking">Walking</option>
-  <option value="strength">Strength Training</option>
-  <option value="hiit">HIIT</option>
-</select>
+    <!-- Workout Selection Dropdown -->
+    <label for="workoutSelect">Select Workout:</label>
+    <select id="workoutSelect" name="workoutSelect" onchange="toggleCustomInput()">
+      <option value="Cycling">Cycling</option>
+      <option value="Running">Running</option>
+      <option value="Swimming">Swimming</option>
+      <option value="Walking">Walking</option>
+      <option value="Strength">Strength Training</option>
+      <option value="HIIT">HIIT</option>
+      <option value="CUSTOM">Custom Activity...</option>
+    </select>
 
     <input type="text" id="customInput" placeholder="Type custom workout (e.g. Kickboxing, Pilates)" style="display: none;" />
 
@@ -371,7 +372,7 @@ console.log(
   const ICON_MAP = {
     'Home': '🏠', 'Strength': '🏋️', 'Swimming': '🏊', 'Cardio': '🏃',
     'Yoga': '🧘', 'Walking': '🚶', 'Aerobics': '🤸', 'Boxing': '🥊',
-    'Cycling': '🚴', 'Pilates': '🧘', 'Climbing': '🧗'
+    'Cycling': '🚴', 'Pilates': '🧘', 'Climbing': '🧗', 'HIIT': '⚡'
   };
   
   const FALLBACK_QUOTES = [
@@ -667,7 +668,6 @@ console.log(
     height: 18px !important;
   }
 </style>
-
 
 </body>
 </html>
